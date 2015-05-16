@@ -1,4 +1,6 @@
-var EE_URL_HOST = "http://localhost:3000";
+//var EE_URL_HOST = "http://localhost:3000";
+var EE_URL_HOST = "";
+
 var EE_URL_SEARCH = "/documents/search";
 var EE_URL_UPLOAD = "/documents/insert";
 var EE_URL_DOWNLOAD = "/documents/download";

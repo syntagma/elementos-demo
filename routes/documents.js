@@ -28,6 +28,7 @@ router.get('/search', function (req, res, next) {
             res.send(response);
         }
     });
+});
 
 router.post('/insert', function(req, res, next) {
     var filename = req.files.archivo.originalname;
@@ -50,15 +51,15 @@ router.post('/insert', function(req, res, next) {
 router.get('/download', function(req, res, next) {
     //TODO: Validar id (que exista por lo menos)
     client.get({
-      index: INDEX,
-      type: 'attachment',
-      id: req.query.id,
-      fields: ['title', '_source']
+        index: INDEX,
+        type: 'attachment',
+        id: req.query.id,
+        fields: ['title', '_source']
     }).then(function (body) {
-        //TODO: rescatar el archivo (que viene en base64) descodificarlo (hace falta?) y devolverlo como attach en el response
         var filename = body._source.title || "Sin_Nombre";
         var base64data = body._source.file;
         var buffer = new Buffer(base64data, 'base64');
+
         var fullname = path.join('/tmp', filename);
         fs.writeFile(fullname, buffer, function(err) {
             if (err) return next(err);
@@ -66,7 +67,7 @@ router.get('/download', function(req, res, next) {
             var mimetype = mime.lookup(filename);
 
             res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-            //res.setHeader('Content-type', mimetype);
+            res.setHeader('Content-type', mimetype);
 
             var filestream = fs.createReadStream(fullname);
             filestream.pipe(res);
