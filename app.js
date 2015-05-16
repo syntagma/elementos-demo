@@ -2,6 +2,8 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
+var multer = require('multer');
+
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
@@ -24,6 +26,11 @@ app.set('view engine', 'html');
 
 
 app.use(logger('dev'));
+
+app.use(multer({
+  inMemory:true
+}))
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

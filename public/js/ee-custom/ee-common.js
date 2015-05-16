@@ -1,5 +1,7 @@
 var EE_URL_HOST = "http://localhost:3000";
 var EE_URL_SEARCH = "/documents/search";
+var EE_URL_UPLOAD = "/documents/insert";
+var EE_URL_DOWNLOAD = "/documents/download";
 
 function ee_error(errormsg, title) {
 	var _title = title || "";
@@ -18,7 +20,7 @@ function ee_handleAjaxError(data) {
 	}
 	else {
 		var emsg = "Ha ocurrido un error al realizar la consulta";
-		if (data && data.errorMessage) emsg = data.errorMessage;
+		if (data && data.responseJSON) emsg = data.responseJSON.message;
 		ee_error(emsg, "Error");
 	}
 }

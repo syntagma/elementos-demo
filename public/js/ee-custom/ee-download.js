@@ -5,6 +5,6 @@ function EE_Download(id) {
 
 	this.execute = function(e) {
 		e && e.preventDefault && e.preventDefault();
-		alert("Descargando Documento " + self.id);
+		document.location = EE_URL_HOST + EE_URL_DOWNLOAD + "?id=" + self.id
 	}
 }
