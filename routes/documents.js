@@ -1,6 +1,3 @@
-/**
- * Created by leonardoferrari on 5/15/15.
- */
 var express = require('express');
 var router = express.Router();
 var elasticsearch = require('elasticsearch');
@@ -12,38 +9,25 @@ var client = new elasticsearch.Client({
     host: 'localhost:9200',
     log: 'trace'
 });
+var documentsController = require("../controllers/documentsController");
 
 const INDEX = "test";
+
+
 
 /**
  * VER: https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-search
  * VER: http://www.elasticsearch.cn/tutorials/2011/07/18/attachment-type-in-action.html
  */
-router.get('/search', function(req, res, next) {
-    client.search({
-        type: "attachment",
-        index: INDEX,
-        fields: ["title", "hightlight"],
-        body: {
-            query : {
-                query_string : {
-                    query : req.query.query
-                }
-            },
-            highlight : {
-                fields : {
-                    file : {}
-                }
-            }
+router.get('/search', function (req, res, next) {
+    console.log("Inside Document Route .. Search");
+    documentsController.search(req.query.query, function (err, response) {
+        if (err) {
+            next(err);
+        } else {
+            res.send(response);
         }
-    }).then(function (body) {
-        var hits = body.hits.hits;
-        res.send(hits);
-    }, function (error) {
-        console.trace(error.message);
-        next(error);
     });
-});
 
 router.post('/insert', function(req, res, next) {
     var filename = req.files.archivo.originalname;
