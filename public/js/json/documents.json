@@ -1,0 +1,16 @@
+{
+	"hits": [
+		{
+			"filename": "pepe.doc",
+			"content-type": "application/ms-word",
+			"highlight": "<em>Juan</em> se compro una bici",
+			"_id": "1"
+		},
+		{
+			"filename": "sinnombre.doc",
+			"content-type": "application/ms-word",
+			"highlight": "El nene se compro una bici para <em>Juan</em>",
+			"_id": "2"
+		}
+	]
+}
