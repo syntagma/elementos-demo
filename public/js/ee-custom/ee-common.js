@@ -18,7 +18,7 @@ function ee_handleAjaxError(data) {
 	}
 	else {
 		var emsg = "Ha ocurrido un error al realizar la consulta";
-		if (data && data.errorMessage) emsg = data.errorMessage;
+		if (data && data.message) emsg = data.message;
 		ee_error(emsg, "Error");
 	}
 }
