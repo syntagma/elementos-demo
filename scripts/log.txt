@@ -1,0 +1,3 @@
+./createIndex test
+./insertFile PowerEdgeR710.pdf test
+./query power

@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+if [ "$1" == "" ]; then
+	echo uso: query \"query\"
+	exit
+fi
+
+echo "Querying data from $1"
+curl "localhost:9200/_search?pretty=true" -d "{
+  \"fields\" : [\"title\"],
+  \"query\" : {
+    \"query_string\" : {
+      \"query\" : \"$1\"
+    }
+  },
+  \"highlight\" : {
+    \"fields\" : {
+      \"file\" : {}
+    }
+  }
+}"
+

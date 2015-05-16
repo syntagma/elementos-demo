@@ -1,65 +1,84 @@
-function ee_search(searchText) {
-	if (searchText && searchText !== "") {
-		$("div#searchResults").hide();
-		$("div#waiting").show();
-		setTimeout(function() {
-			var s = new EE_Search($("div#searchResults"));
-			s.search(searchText);
-		}, 2000);
-	}
-	else {
-		ee_error("Debe ingresar un texto de busqueda", "Busqueda Invalida");
-		$("div#waiting").hide();
-	}
-}
-
-function ee_download(id) {
-	return function() {
-		alert("Descargando Archivo " + id);
-	};
-}
-
-function EE_Search(resultsContainer) {
+function EE_Search(resultsContainer, waitContainer, searchText) {
 	var self = this;
 	this.list = $('<div class="container">');
 	this.container = resultsContainer;
+	this.wait = waitContainer;
+	this.term = searchText
 
-	this.container.empty();
+	this.execute = function() {
+		if (self.validate()) {
+			self.init();
+			//pongo un timeout para esperar un cacho hasta que empiece la busqueda y se vea el circulito :)
+			setTimeout(self.search, 1000);
+		}
+	}
 
-	this.search = function(term) {
+	this.validate = function() {
+		if (self.term === undefined || self.term == "") {
+			ee_error("Debe ingresar un termino de busqueda", "Busqueda Invalida");
+			return false;
+		}
+
+		return true;
+	}
+
+	this.init = function() {
+		self.container.hide();
+		self.wait.show();
+	}
+
+	this.search = function(callback) {
 		$.ajax({
 			dataType: "json",
 			url: EE_URL_HOST + EE_URL_SEARCH,
-			data: { query: term },
+			data: { query: self.term },
 			success: function(data) {
-				self.makeList(data.hits);
-				self.container.append(self.list);
-				self.container.show();
+				self.makeList(data);
+				self.success();
 			}
 		}).fail(function(data) {
-			var emsg = "Ha ocurrido un error al realizar la consulta";
-			if (data && data.errorMessage) emsg = data.errorMessage;
-			ee_error(emsg, "Error");
+			ee_handleAjaxError(data);
 		}).always(function() {
-			$("div#waiting").hide();
+			self.finalize();
 		});
 	};
 
+	this.success = function() {
+		self.container.empty();
+		self.container.append(self.list);
+	}
+
+	this.finalize = function() {
+		self.container.show();
+		self.wait.hide();
+	}
+
 	this.makeList = function(hits) {
+		if (hits.length == 0) {
+			self.list.append($("<h3>").text("No se encontraron resultados"));
+			return;
+		}
+
 		for (var i = 0; i < hits.length; i++) {
 			var hit = hits[i];
+
+			var filename = "[Desconocido]";
+			if (hit.fields && hit.fields.title) filename = hit.fields.title[0];
+
+			var highlight = hit.highlight.file.join("[...]");
 
 			var button = $('<button class="btn btn-success btn-lg ee_download">')
 				.html('<span class="glyphicon glyphicon-download"></span> Descargar');
 
-			button.click(ee_download(hit._id));
+			button.click(new EE_Download(hit._id).execute);
 
 			var element = $('<div class="panel-body">');
 			element.append($('<div class="row">')
-				.append($('<div class="col-md-10">').html('<h3><span class="glyphicon glyphicon-file"></span> ' + hit.filename + '</h3>'))
+				.append($('<div class="col-md-10">')
+					.html('<h3><span class="glyphicon glyphicon-file"></span> ' + filename + '</h3>'))
 				.append($('<div class="col-md-2">').append(button))
 				.append($('<div>')
-					.append($('<div class="col-md-12 ee-highlight">').html("[...]" + hit.highlight + "[...]"))
+					.append($('<div class="col-md-12 ee-highlight">').html("[...]" + highlight + "[...]"))
 				)
 			);
 			self.list.append($('<div class="panel panel-default">').append(element));

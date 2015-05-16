@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e
+
+if [ "$1" == "" ]; then
+	echo uso $0 indexName
+	exit
+fi
+
+echo "Deleting index $1 . . ." 
+curl -X DELETE "localhost:9200/$1"
+echo
+
+echo "Creating index $1 . . ."
+curl -X PUT "localhost:9200/$1" -d '{
+  "settings" : { "index" : { "number_of_shards" : 1, "number_of_replicas" : 0 }}
+}'
+echo
+
+echo "Create attachment mapping . . ."
+curl -X PUT "localhost:9200/$1/attachment/_mapping" -d '{
+  "attachment" : {
+    "properties" : {
+      "file" : {
+        "type" : "attachment",
+        "fields" : {
+          "title" : { "store" : "yes" },
+          "file" : { "term_vector":"with_positions_offsets", "store":"yes" }
+        }
+      }
+    }
+  }
+}'
+echo
+

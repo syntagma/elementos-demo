@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+
+if [ "$1" == "" ]; then
+	echo uso: $0 archivo index
+	exit
+fi
+
+if [ ! -f $1 ]; then
+	echo el archivo $1 no existe
+	exit
+fi
+
+if [ "$2" == "" ]; then
+	echo uso: $0 archivo index
+	exit
+fi
+
+echo "Indexing file $1 into $2 . . ."
+coded=`cat $1 | perl -MMIME::Base64 -ne 'print encode_base64($_)'`
+json="{\"file\":\"${coded}\", \"title\": \"$1\"}"
+echo "$json" > json.file
+curl -X POST "localhost:9200/$2/attachment/" -d @json.file
+echo

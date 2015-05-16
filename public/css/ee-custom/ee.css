@@ -1,5 +1,4 @@
-input.ee-searchText.ee-long { width: 90%; }
-div#searchPage { display:none; }
+div#waiting { display: none; }
 
 .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
