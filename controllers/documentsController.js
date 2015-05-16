@@ -1,5 +1,3 @@
-var express = require('express');
-var router = express.Router();
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
     host: 'localhost:9200',
@@ -27,7 +25,8 @@ client.indices.exists(
  * VER: https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-search
  * VER: http://www.elasticsearch.cn/tutorials/2011/07/18/attachment-type-in-action.html
  */
-router.get('/search', function (req, res, next) {
+exports.search = function search (query, callback) {
+    console.log("Inside Document Controller .. Search");
     client.ping({
         // ping usually has a 3000ms timeout
         requestTimeout: Infinity,
@@ -35,6 +34,7 @@ router.get('/search', function (req, res, next) {
         // undocumented params are appended to the query string
         hello: "elasticsearch!"
     }, function (error) {
+        console.log("Inside Document Controller .. Ping");
         if (error) {
             console.trace('elasticsearch cluster is down!');
             next(error);
@@ -46,7 +46,7 @@ router.get('/search', function (req, res, next) {
                 body: {
                     query: {
                         query_string: {
-                            query: req.query.query
+                            query: query
                         }
                     },
                     highlight: {
@@ -57,46 +57,14 @@ router.get('/search', function (req, res, next) {
                 }
             }).then(function (body) {
                 var hits = body.hits.hits;
-                res.send(hits);
+                callback(null, hits);
             }, function (error) {
                 console.trace(error.message);
-                next(error);
+                callback(error);
             });
         }
     });
-});
+};
 
-router.post('/insert', function (req, res, next) {
-    client.create({
-        index: INDEX,
-        type: 'attachment',
-        body: {
-            title: filename,    //TODO: obtener el filename de req
-            file: base64EncodedFile //TODO: codificar el archivo en Base64
-        }
-    }).then(function (body) {
-        res.send(body);
-    }, function (error) {
-        console.trace(error.message);
-        next(error);
-    });
-});
 
-router.get('/download', function (req, res, next) {
-    //TODO: Validar id (que exista por lo menos)
-    client.get({
-        index: INDEX,
-        type: 'attachment',
-        id: req.query.id,
-        fields: ["file"]
-    }).then(function (body) {
-        //TODO: rescatar el archivo (que viene en base64) descodificarlo (hace falta?) y devolverlo como attach en el response
-        file = body.file;
-        res.send(file);
-    }, function (error) {
-        console.trace(error.message);
-        next(error);
-    });
-});
 
-module.exports = router;
