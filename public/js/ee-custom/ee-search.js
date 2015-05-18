@@ -3,7 +3,7 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 	this.list = $('<div class="container">');
 	this.container = resultsContainer;
 	this.wait = waitContainer;
-	this.term = searchText
+	this.term = searchText;
 
 	this.execute = function() {
 		if (self.validate()) {
@@ -11,7 +11,7 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 			//pongo un timeout para esperar un cacho hasta que empiece la busqueda y se vea el circulito :)
 			setTimeout(self.search, 1000);
 		}
-	}
+	};
 
 	this.validate = function() {
 		if (self.term === undefined || self.term == "") {
@@ -20,12 +20,12 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 		}
 
 		return true;
-	}
+	};
 
 	this.init = function() {
 		self.container.hide();
 		self.wait.show();
-	}
+	} ;
 
 	this.search = function(callback) {
 		$.ajax({
@@ -46,12 +46,12 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 	this.success = function() {
 		self.container.empty();
 		self.container.append(self.list);
-	}
+	};
 
 	this.finalize = function() {
 		self.container.show();
 		self.wait.hide();
-	}
+	};
 
 	this.makeList = function(hits) {
 		if (hits.length == 0) {
@@ -65,7 +65,7 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 			var filename = "[Desconocido]";
 			if (hit.fields && hit.fields.title) filename = hit.fields.title[0];
 
-			var highlight = hit.highlight.file.join("[...]");
+			var highlight = hit.highlight.file.length;
 
 			var button = $('<button class="btn btn-success btn-lg ee_download">')
 				.html('<span class="glyphicon glyphicon-download"></span> Descargar');
@@ -78,7 +78,7 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 					.html('<h3><span class="glyphicon glyphicon-file"></span> ' + filename + '</h3>'))
 				.append($('<div class="col-md-2">').append(button))
 				.append($('<div>')
-					.append($('<div class="col-md-12 ee-highlight">').html("[...]" + highlight + "[...]"))
+					.append($('<div class="col-md-12 ee-highlight">').html(highlight + " Bytes"))
 				)
 			);
 			self.list.append($('<div class="panel panel-default">').append(element));

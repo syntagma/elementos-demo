@@ -29,7 +29,7 @@ app.use(logger('dev'));
 
 app.use(multer({
   inMemory:true
-}))
+}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
