@@ -65,8 +65,8 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 			var filename = "[Desconocido]";
 			if (hit.fields && hit.fields.title) filename = hit.fields.title[0];
 
-			var highlight = hit.highlight.file.length;
-
+			//var highlight = hit.highlight.file.length;
+			var highlight = hit.highlight;
 			var button = $('<button class="btn btn-success btn-lg ee_download">')
 				.html('<span class="glyphicon glyphicon-download"></span> Descargar');
 

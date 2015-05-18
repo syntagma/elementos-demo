@@ -15,9 +15,30 @@ client.indices.exists(
     ,
     function (err, response) {
         if (!response) {
-            client.indices.create({"index": INDEX}, function (err, response) {
-                console.trace(response);
-            })
+            client.indices.putMapping({
+                "index": INDEX, "type": "attachment",
+                "body": {
+                    "mappings": {
+                        "properties": {
+                            "file": {
+                                "type": "attachment",
+                                "fields": {
+                                    "title": {"store": "yes"},
+                                    "file": {"term_vector": "with_positions_offsets", "store": "yes"}
+                                }
+                            }
+                        }
+                    }
+                }
+            }, function (err, response) {
+                if (err) {
+                    console.trace(err.message);
+                    return;
+                }
+                client.indices.create({"index": INDEX}, function (err, response) {
+                    console.trace(response);
+                });
+            });
         } else {
             console.log("Index exists");
         }
@@ -46,7 +67,7 @@ exports.search = function search(query, callback) {
             client.search({
                     type: "attachment",
                     index: INDEX,
-                    fields: ["title", "tresdedos", "hightlight"],
+                    fields: ["title", "tresdedos","type", "hightlight"],
                     body: {
                         query: {
                             query_string: {
@@ -92,7 +113,8 @@ exports.post = function post(files, callback) {
             body: {
                 title: filename,
                 file: base64data,
-                tresdedos: "pruebita"
+                tresdedos: "pruebita",
+                type:"img"
             }
         }
         , function (err, response) {
@@ -106,6 +128,7 @@ exports.post = function post(files, callback) {
             callback(err, response);
         });
 };
+
 
 exports.download = function download(params, callback) {
     console.log("Inside Document Controller .. Download");
