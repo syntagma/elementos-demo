@@ -67,7 +67,7 @@ exports.search = function search(query, callback) {
             client.search({
                     type: "attachment",
                     index: INDEX,
-                    fields: ["title", "tresdedos","type", "hightlight"],
+                    fields: ["title", "type", "hightlight"],
                     body: {
                         query: {
                             query_string: {
