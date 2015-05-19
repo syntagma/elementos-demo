@@ -66,7 +66,9 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 			if (hit.fields && hit.fields.title) filename = hit.fields.title[0];
 
 			//var highlight = hit.highlight.file.length;
-			var detail = hit.fields.title + " " + hit.fields.tresdedos + " " + hit.fields.type;
+			var detail = "sin datos";
+			if (hit.highlight && hit.highlight.file) detail = "[...]" + hit.highlight.file.join("[...]") + "[...]";
+			//hit.fields.title + " " + hit.fields.tresdedos + " " + hit.fields.type;
 			var button = $('<button class="btn btn-success btn-lg ee_download">')
 				.html('<span class="glyphicon glyphicon-download"></span> Descargar');
 
@@ -78,7 +80,7 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 					.html('<h3><span class="glyphicon glyphicon-file"></span> ' + filename + '</h3>'))
 				.append($('<div class="col-md-2">').append(button))
 				.append($('<div>')
-					.append($('<div class="col-md-12 ee-highlight">').html(detail))
+					.append($('<div class="col-md-12 ee-highlight">').append($("<p class='text-info well'>").html(detail)))
 				)
 			);
 			self.list.append($('<div class="panel panel-default">').append(element));
