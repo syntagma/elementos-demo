@@ -106,6 +106,7 @@ exports.post = function post(files, callback) {
     console.log("Inside Document Controller .. Post");
     var filename = files.archivo.originalname;
     var base64data = new Buffer(files.archivo.buffer).toString('base64');
+    var mimetype = mime.lookup(filename);
     client.create({
             index: INDEX,
             type: 'attachment',
@@ -113,8 +114,7 @@ exports.post = function post(files, callback) {
             body: {
                 title: filename,
                 file: base64data,
-                tresdedos: "pruebita",
-                type:"img"
+                type: mimetype
             }
         }
         , function (err, response) {
