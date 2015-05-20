@@ -65,9 +65,11 @@ function EE_Search(resultsContainer, waitContainer, searchText) {
 			var filename = "[Desconocido]";
 			if (hit.fields && hit.fields.title) filename = hit.fields.title[0];
 
-			//var highlight = hit.highlight.file.length;
-			var detail = "sin datos";
+			var detail = "";
+			var nroPoliza = hit.fields.nroPoliza[0];
 			if (hit.highlight && hit.highlight.file) detail = "[...]" + hit.highlight.file.join("[...]") + "[...]";
+			detail = "<em>Nro de Poliza: </em>" + nroPoliza + "<br/>" + detail;
+
 			//hit.fields.title + " " + hit.fields.tresdedos + " " + hit.fields.type;
 			var button = $('<button class="btn btn-success btn-lg ee_download">')
 				.html('<span class="glyphicon glyphicon-download"></span> Descargar');

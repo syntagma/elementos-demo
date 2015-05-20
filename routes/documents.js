@@ -3,9 +3,6 @@ var router = express.Router();
 var documentsController = require("../controllers/documentsController");
 var fs = require('fs');
 
-const INDEX = "test";
-
-
 /**
  * VER: https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-search
  * VER: http://www.elasticsearch.cn/tutorials/2011/07/18/attachment-type-in-action.html
@@ -23,7 +20,11 @@ router.get('/search', function (req, res, next) {
 
 router.post('/insert', function (req, res, next) {
     console.log("Inside Document Route .. insert");
-    documentsController.post(req.files, function (err, response) {
+
+    documentsController.post({ 
+        files: req.files,
+        nroPoliza: req.body.nroPoliza
+    }, function (err, response) {
         if (err) {
             next(err);
         } else {

@@ -20,6 +20,7 @@ echo "Create attachment mapping . . ."
 curl -X PUT "localhost:9200/$1/attachment/_mapping" -d '{
   "attachment" : {
     "properties" : {
+      "nroPoliza" : { "type": "string", "store": true },
       "file" : {
         "type" : "attachment",
         "fields" : {
