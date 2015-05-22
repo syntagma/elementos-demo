@@ -7,8 +7,8 @@ if [ "$1" == "" ]; then
 fi
 
 echo "Querying data from $1"
-curl "localhost:9200/_search?pretty=true" -d "{
-  \"fields\" : [\"title\"],
+curl "localhost:9200/polizas/_search?pretty=true" -d "{
+  \"fields\" : [\"title\", \"nroPoliza\"],
   \"query\" : {
     \"query_string\" : {
       \"query\" : \"$1\"

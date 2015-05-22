@@ -8,7 +8,7 @@ var client = new elasticsearch.Client({
     log: 'trace'
 });
 
-const INDEX = "test";
+const INDEX = "polizas";
 
 client.indices.exists(
     {"index": INDEX}
@@ -67,7 +67,7 @@ exports.search = function search(query, callback) {
             client.search({
                     type: "attachment",
                     index: INDEX,
-                    fields: ["title", "type", "hightlight"],
+                    fields: ["title", "type", "hightlight", "nroPoliza"],
                     body: {
                         query: {
                             query_string: {
@@ -102,19 +102,22 @@ exports.search = function search(query, callback) {
     });
 };
 
-exports.post = function post(files, callback) {
+exports.post = function post(req, callback) {
     console.log("Inside Document Controller .. Post");
+    var files = req.files;
+    var nroPoliza = req.nroPoliza;
+
     var filename = files.archivo.originalname;
     var base64data = new Buffer(files.archivo.buffer).toString('base64');
     var mimetype = mime.lookup(filename);
     client.create({
             index: INDEX,
             type: 'attachment',
-            id: filename,
             body: {
                 title: filename,
                 file: base64data,
-                type: mimetype
+                type: mimetype,
+                nroPoliza: nroPoliza
             }
         }
         , function (err, response) {

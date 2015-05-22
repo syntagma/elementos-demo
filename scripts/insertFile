@@ -18,7 +18,7 @@ fi
 
 echo "Indexing file $1 into $2 . . ."
 coded=`cat $1 | perl -MMIME::Base64 -ne 'print encode_base64($_)'`
-json="{\"file\":\"${coded}\", \"title\": \"$1\"}"
+json="{\"file\":\"${coded}\", \"title\": \"$1\", \"type\": \"$2\", \"nroPoliza\": \"1234567890\"}"
 echo "$json" > json.file
 curl -X POST "localhost:9200/$2/attachment/" -d @json.file
 echo
